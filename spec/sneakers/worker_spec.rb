@@ -171,18 +171,15 @@ describe Sneakers::Worker do
           :timeout_job_after => 5,
           :prefetch => 10,
           :threads => 10,
-          :share_threads => false,
           :durable => true,
           :ack => true,
           :amqp => "amqp://guest:guest@localhost:5672",
           :vhost => "/",
           :exchange => "sneakers",
           :exchange_type => :direct,
-          :exchange_arguments => {},
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
-          :heartbeat => 2,
-          :amqp_heartbeat => 10
+          :heartbeat  =>  2
         )
       end
 
@@ -199,18 +196,15 @@ describe Sneakers::Worker do
           :timeout_job_after => 1,
           :prefetch => 40,
           :threads => 50,
-          :share_threads => false,
           :durable => false,
           :ack => false,
           :amqp => "amqp://guest:guest@localhost:5672",
           :vhost => "/",
           :exchange => "dummy",
           :exchange_type => :direct,
-          :exchange_arguments => {},
           :hooks => {},
           :handler => Sneakers::Handlers::Oneshot,
-          :heartbeat => 5,
-          :amqp_heartbeat => 10
+          :heartbeat => 5
         )
       end
     end

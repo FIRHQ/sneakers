@@ -5,13 +5,7 @@ task :environment
 
 namespace :sneakers do
   desc "Start work (set $WORKERS=Klass1,Klass2)"
-  task :run do
-    Sneakers.server = true
-    Rake::Task['environment'].invoke
-
-    if defined?(::Rails)
-      ::Rails.application.eager_load!
-    end
+  task :run  => :environment do
 
     workers, missing_workers = Sneakers::Utils.parse_workers(ENV['WORKERS'])
 
@@ -32,7 +26,7 @@ Please set the classes of the workers you want to run like so:
 EOF
       exit(1)
     end
-    opts = (!ENV['WORKER_COUNT'].nil? ? {:workers => ENV['WORKER_COUNT'].to_i} : {})
+    opts = (ENV['WORKER_COUNT'].present? ? {:workers => ENV['WORKER_COUNT'].to_i} : {})
     r = Sneakers::Runner.new(workers, opts)
 
     r.run

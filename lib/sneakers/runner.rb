@@ -63,22 +63,19 @@ module Sneakers
       config
     end
 
-    private
-
-    def make_serverengine_config
+  private
+  def make_serverengine_config
       # From Sneakers#setup_general_logger, there's support for a Logger object
       # in CONFIG[:log].  However, serverengine takes an object in :logger.
       # Pass our logger object so there's no issue about sometimes passing a
       # file and sometimes an object.
-      serverengine_config =  Sneakers::CONFIG.merge(@conf)
-      serverengine_config.merge!(
+      without_log = Sneakers::CONFIG.merge(@conf)
+      without_log.delete(:log)
+      Sneakers::CONFIG.merge(@conf).merge({
         :logger => Sneakers.logger,
         :worker_type => 'process',
         :worker_classes => @worker_classes
-      )
-      serverengine_config.delete(:log)
-
-      serverengine_config
+      })
     end
   end
 

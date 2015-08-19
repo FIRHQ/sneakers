@@ -21,7 +21,6 @@ WORKER_OPTIONS = {
   :prefetch => 1,
   :timeout_job_after => 60,
   :heartbeat => 5,
-  :amqp_heartbeat => 10,
   :retry_timeout => 5000
 }
 

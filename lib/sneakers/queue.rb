@@ -16,10 +16,7 @@ class Sneakers::Queue
   # :ack
   #
   def subscribe(worker)
-    # If we've already got a bunny object, use it.  This allows people to
-    # specify all kinds of options we don't need to know about (e.g. for ssl).
-    @bunny = @opts[:connection]
-    @bunny ||= create_bunny_connection
+    @bunny = Bunny.new(@opts[:amqp], :vhost => @opts[:vhost], :heartbeat => @opts[:heartbeat], :logger => Sneakers::logger)
     @bunny.start
 
     @channel = @bunny.create_channel
@@ -28,8 +25,7 @@ class Sneakers::Queue
     exchange_name = @opts[:exchange]
     @exchange = @channel.exchange(exchange_name,
                                   :type => @opts[:exchange_type],
-                                  :durable => @opts[:durable],
-                                  :arguments => @opts[:exchange_arguments])
+                                  :durable => @opts[:durable])
 
     routing_key = @opts[:routing_key] || @name
     routing_keys = [*routing_key]
@@ -64,9 +60,4 @@ class Sneakers::Queue
     @consumer.cancel if @consumer
     @consumer = nil
   end
-
-  def create_bunny_connection
-    Bunny.new(@opts[:amqp], :vhost => @opts[:vhost], :heartbeat => @opts[:heartbeat], :logger => Sneakers::logger)
-  end
-  private :create_bunny_connection
 end

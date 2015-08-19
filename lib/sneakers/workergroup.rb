@@ -19,11 +19,7 @@ module Sneakers
     def run
       after_fork
 
-      # Allocate single thread pool if share_threads is set. This improves load balancing
-      # when used with many workers.
-      pool = config[:share_threads] ? Thread.pool(config[:threads]) : nil
-
-      @workers = config[:worker_classes].map{|w| w.new(nil, pool) }
+      @workers = config[:worker_classes].map{|w| w.new }
       # if more than one worker this should be per worker
       # accumulate clients and consumers as well
       @workers.each do |worker|
@@ -31,7 +27,7 @@ module Sneakers
       end
       # end per worker
       #
-      until @stop_flag.wait_for_set(Sneakers::CONFIG[:amqp_heartbeat])
+      until @stop_flag.wait_for_set(10.0)
         Sneakers.logger.debug("Heartbeat: running threads [#{Thread.list.count}]")
         # report aggregated stats?
       end
@@ -48,3 +44,4 @@ module Sneakers
 
   end
 end
+

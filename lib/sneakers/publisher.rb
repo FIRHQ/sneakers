@@ -13,7 +13,6 @@ module Sneakers
       options[:routing_key] ||= to_queue
       Sneakers.logger.info {"publishing <#{msg}> to [#{options[:routing_key]}]"}
       @exchange.publish(msg, options)
-      @bunny.close
     end
 
 
@@ -24,7 +23,7 @@ module Sneakers
       @bunny = Bunny.new(@opts[:amqp], heartbeat: @opts[:heartbeat], vhost: @opts[:vhost], :logger => Sneakers::logger)
       @bunny.start
       @channel = @bunny.create_channel
-      @exchange = @channel.exchange(@opts[:exchange], type: @opts[:exchange_type], durable: @opts[:durable], arguments: @opts[:exchange_arguments])
+      @exchange = @channel.exchange(@opts[:exchange], type: @opts[:exchange_type], durable: @opts[:durable])
     end
 
     def connected?
