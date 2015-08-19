@@ -13,6 +13,7 @@ module Sneakers
       options[:routing_key] ||= to_queue
       Sneakers.logger.info {"publishing <#{msg}> to [#{options[:routing_key]}]"}
       @exchange.publish(msg, options)
+      @bunny.close
     end
 
 
